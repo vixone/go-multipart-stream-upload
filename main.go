@@ -23,7 +23,6 @@ type S3Uploader struct {
 	numWorkers     int
 }
 
-// NewS3Uploader initializes and returns a new S3Uploader instance.
 func NewS3Uploader(bucketName, fileURL, s3Key string, uploadPartSize int64, numWorkers int) *S3Uploader {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 
@@ -122,6 +121,7 @@ func (u *S3Uploader) UploadFile(ctx context.Context) error {
 	for {
 		n, err := fileStream.Read(buf)
 		if n > 0 {
+			// upload relevant chunk of the read buffer [:n]
 			part, err := u.UploadPart(ctx, uploadID, partNumber, buf[:n])
 			if err != nil {
 				return err
